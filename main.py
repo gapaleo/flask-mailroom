@@ -30,13 +30,11 @@ def create():
         donor_name = request.form['donor-name']
 
         try:
-            donor = Donor.select().where(Donor.name == donor_name).get()
+            donor = Donor.get(Donor.name == donor_name)
         except Donor.DoesNotExist:
-            donor = Donor(name=donor_name)
-            donor.save()
+            donor = Donor.create(name=donor_name)
 
-        donation = Donation(value=request.form['donation-amount'], donor=donor)
-        donation.save()
+        Donation.create(value=request.form['donation-amount'], donor=donor)
         return redirect(url_for('all'))
 
     return render_template('create.jinja2')
@@ -46,7 +44,7 @@ def create():
 def login():
     if request.method == 'POST':
         try:
-            user = User.select().where(User.name == request.form['name']).get()
+            user = User.get(User.name == request.form['name'])
         except User.DoesNotExist:
             return render_template('login.jinja2', error='Incorrect username or password.')
         if pbkdf2_sha256.verify(request.form['password'], user.password):
@@ -54,6 +52,21 @@ def login():
             return redirect(url_for('create'))
         return render_template('login.jinja2', error='Incorrect username or password.')
     return render_template('login.jinja2')
+
+
+@app.route('/donors')
+def donors():
+    donor_name = request.args.get('donor-name', None)
+    if donor_name is None:
+        return render_template('donors.jinja2')
+
+    try:
+        donor = Donor.get(Donor.name == donor_name)
+    except Donor.DoesNotExist:
+        return render_template('donors.jinja2', error="Donor does not exist.")
+
+    donations = donor.donations
+    return render_template('donors.jinja2', donations=donations)
 
 
 if __name__ == "__main__":
