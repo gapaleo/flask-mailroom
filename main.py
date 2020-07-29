@@ -22,8 +22,14 @@ def all():
 @app.route('/create', methods=['GET', 'POST'])
 def create():
     if request.method == 'POST':
-        donor = Donor.select().where(
-            Donor.name == request.form['donor-name']).get()
+        donor_name = request.form['donor-name']
+        try:
+            donor = Donor.select().where(
+                Donor.name == donor_name).get()
+        except Donor.DoesNotExist:
+            donor = Donor(name=donor_name)
+            donor.save()
+
         donation = Donation(value=request.form['donation-amount'], donor=donor)
         donation.save()
         return redirect(url_for('all'))
