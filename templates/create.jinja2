@@ -4,8 +4,8 @@
 
 {% block content %}
 <form method="POST">
-    <label for="donor-name-input">Donor name:</label><input id="donor-name-input" type="text" name="donor-name"><br>
-    <label for="donation-amount-input">Donation amount:</label><input id="donation-amount-input" type="number" name="donation-amount" min="1"><br>
+    <label for="donor-name-input">Donor name:</label><input id="donor-name-input" type="text" name="donor-name" required><br>
+    <label for="donation-amount-input">Donation amount:</label><input id="donation-amount-input" type="number" name="donation-amount" min="1" required><br>
     <input type="submit" value="Add Donation">
 </form>
 {% endblock content %}

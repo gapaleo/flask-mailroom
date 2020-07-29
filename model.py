@@ -18,3 +18,8 @@ class Donor(BaseModel):
 class Donation(BaseModel):
     value = IntegerField()
     donor = ForeignKeyField(Donor, backref='donations')
+
+
+class User(BaseModel):
+    name = CharField(max_length=255, unique=True)
+    password = CharField(max_length=255)
